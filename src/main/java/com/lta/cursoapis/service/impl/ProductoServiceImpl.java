@@ -53,17 +53,23 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    @SneakyThrows
     public void eliminarProducto(Long idProducto) {
-
+        productoRepository.findByIdProducto(idProducto)
+                .orElseThrow(() -> new Exception("Producto con ID " + idProducto + " no encontrado"));
+        productoRepository.deleteById(idProducto);
     }
 
     @Override
     public Producto actualizarEstado(Long idProducto, EstadoProducto estadoProducto) {
-        return null;
+        Producto productoExistente = productoRepository.findByIdProducto(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + idProducto));
+        productoExistente.setEstadoProducto(estadoProducto);
+        return productoRepository.save(productoExistente);
     }
 
     @Override
     public List<Producto> listarPorEstado(EstadoProducto estadoProducto) {
-        return List.of();
+        return productoRepository.findByEstado(estadoProducto);
     }
 }
