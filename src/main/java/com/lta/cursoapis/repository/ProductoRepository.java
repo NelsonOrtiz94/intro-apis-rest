@@ -14,7 +14,7 @@ public interface ProductoRepository extends JpaRepository<Producto,Long> {
     Optional<Producto> findByIdProducto(Long idProducto);
     Optional<Producto> findByNombreProducto(String nombreProducto);
 
-    List<Producto> findByEstado(EstadoProducto estadoProducto);
+    List<Producto> findByEstadoProducto(EstadoProducto estadoProducto);
 
     Optional<Object> deleteByIdProducto(Long idProducto);
 }

@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 // Especificamente para API REST , controlador REST
 // @RestController combina @Controller y @ResponseBody
 // No vistas HTML, solo respuestas JSON o XML
-@RestController
+// @RestController
 // Ruta base para este controlador
 // Todas las rutas de este controlador comenzarán con /prueba
-@RequestMapping("/prueba")
+// @RequestMapping("/prueba")
 public class SaludoController {
 
     // Método que maneja solicitudes GET a la ruta /prueba
