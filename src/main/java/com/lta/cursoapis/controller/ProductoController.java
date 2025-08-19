@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/producto")
@@ -26,5 +27,12 @@ public class ProductoController {
     public ResponseEntity<List<Producto>> listarProductos() {
         List<Producto> productos = productoService.listarProductos();
         return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("/buscar/{nombre}")
+    public ResponseEntity<?> buscarPorNombre(@PathVariable String nombre){
+        Optional<Producto> producto = productoService.findByNombre(nombre);
+        return producto.isPresent() ? ResponseEntity.ok(producto.get())
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con nombre: " + nombre);
     }
 }
