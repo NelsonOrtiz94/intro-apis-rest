@@ -29,10 +29,19 @@ public class ProductoController {
         return ResponseEntity.ok(productos);
     }
 
-    @GetMapping("/buscar/{nombre}")
+    @GetMapping("/buscar/nombre/{nombre}")
     public ResponseEntity<?> buscarPorNombre(@PathVariable String nombre){
         Optional<Producto> producto = productoService.findByNombre(nombre);
         return producto.isPresent() ? ResponseEntity.ok(producto.get())
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con nombre: " + nombre);
     }
+
+    @GetMapping("/buscar/id/{idProducto}")
+    public ResponseEntity<?> findById(@PathVariable String idProducto){
+        Optional<Producto> producto = productoService.findByNombre(idProducto);
+        return producto.isPresent() ? ResponseEntity.ok(producto.get())
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con nombre: " + idProducto);
+    }
+
+    
 }
