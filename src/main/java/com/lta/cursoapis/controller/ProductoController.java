@@ -37,11 +37,14 @@ public class ProductoController {
     }
 
     @GetMapping("/buscar/id/{idProducto}")
-    public ResponseEntity<?> findById(@PathVariable String idProducto){
-        Optional<Producto> producto = productoService.findByNombre(idProducto);
-        return producto.isPresent() ? ResponseEntity.ok(producto.get())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con nombre: " + idProducto);
+    public ResponseEntity<?> findById(@PathVariable Long idProducto){
+        Optional<Producto> producto = productoService.findById(idProducto);
+        return producto.isPresent()
+                ? ResponseEntity.ok(producto.get())
+                : ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Producto no encontrado con id: " + idProducto);
     }
 
-    
+
+
 }
