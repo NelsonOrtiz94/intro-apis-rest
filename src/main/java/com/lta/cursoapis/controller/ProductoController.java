@@ -45,8 +45,20 @@ public class ProductoController {
                 .body("Producto no encontrado con id: " + idProducto);
     }
 
+    @PutMapping("/actualizar/{idProducto}")
     public ResponseEntity<?> actualizarProducto(@PathVariable Long idProducto, @RequestBody Producto producto) {
-      
-    }
+      try{
+          Producto productoActualizado = new Producto();
+          productoActualizado.setNombreProducto(producto.getNombreProducto());
+            productoActualizado.setDescripcionProducto(producto.getDescripcionProducto());
+            productoActualizado.setPrecio(producto.getPrecio());
+            productoActualizado.setCantidad(producto.getCantidad());
+            productoActualizado.setEstadoProducto(producto.getEstadoProducto());
+            Producto productoBBDD = productoService.actualizarProducto(idProducto, productoActualizado);
+            return ResponseEntity.ok(productoBBDD);
 
+      } catch (Exception exception){
+          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+      }
+    }
 }
