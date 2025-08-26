@@ -45,6 +45,8 @@ public class ProductoController {
                 .body("Producto no encontrado con id: " + idProducto);
     }
 
-
+    public ResponseEntity<?> actualizarProducto(@PathVariable Long idProducto, @RequestBody Producto producto) {
+      
+    }
 
 }
