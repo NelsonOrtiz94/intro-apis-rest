@@ -1,5 +1,6 @@
 package com.lta.cursoapis.controller;
 
+import com.lta.cursoapis.entity.EstadoProducto;
 import com.lta.cursoapis.entity.Producto;
 import com.lta.cursoapis.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,21 @@ public class ProductoController {
         } catch (Exception exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
+    }
+
+    @PutMapping("/estado/{idProducto}")
+    public ResponseEntity<?> cambiarEstadoProducto(@PathVariable Long idProducto, @RequestParam String estadoProducto) {
+        try{
+            Producto productoActualizado = productoService.actualizarEstado(idProducto, EstadoProducto.valueOf(estadoProducto));
+            return ResponseEntity.ok(productoActualizado);
+        } catch (Exception exception){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
+    @PutMapping("/estado/estado")
+    public ResponseEntity<List<Producto>> listarProdcutoPorEstado(@RequestParam EstadoProducto estadoProducto) {
+        List<Producto> productos = productoService.listarPorEstado(EstadoProducto.valueOf(String.valueOf(estadoProducto)));
+        return ResponseEntity.ok(productos);
     }
 }
