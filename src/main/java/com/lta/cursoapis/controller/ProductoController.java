@@ -65,7 +65,7 @@ public class ProductoController {
     public ResponseEntity<?> eliminarProducto(@PathVariable Long idProducto) {
         try{
             productoService.eliminarProducto(idProducto);
-            return ResponseEntity.ok("Producto eliminado con exito");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
