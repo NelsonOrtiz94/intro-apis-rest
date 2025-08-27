@@ -63,6 +63,7 @@ public class ProductoController {
       }
     }
 
+    @DeleteMapping("/eliminar/{idProducto}")
     public ResponseEntity<?> eliminarProducto(@PathVariable Long idProducto) {
         try{
             productoService.eliminarProducto(idProducto);
