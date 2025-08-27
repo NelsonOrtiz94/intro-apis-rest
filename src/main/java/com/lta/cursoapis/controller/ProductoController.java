@@ -82,9 +82,9 @@ public class ProductoController {
         }
     }
 
-    @PutMapping("/estado/estado")
-    public ResponseEntity<List<Producto>> listarProdcutoPorEstado(@RequestParam EstadoProducto estadoProducto) {
-        List<Producto> productos = productoService.listarPorEstado(EstadoProducto.valueOf(String.valueOf(estadoProducto)));
+    @GetMapping("/listar/{estado}")
+    public ResponseEntity<List<Producto>> listarProdcutoPorEstado(@PathVariable String estado) {
+        List<Producto> productos = productoService.listarPorEstado(EstadoProducto.valueOf(estado));
         return ResponseEntity.ok(productos);
     }
 }
