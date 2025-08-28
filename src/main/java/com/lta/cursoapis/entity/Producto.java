@@ -19,16 +19,16 @@ public class Producto {
     @Column(nullable = false, length = 100)
     private String nombreProducto;
 
-    @Column(name= "descripcion")
+    @Column(name = "descripcion")
     private String descripcionProducto;
 
-    @Column(name= "precio", nullable = false)
+    @Column(name = "precio", nullable = false)
     private Double precio;
 
-    @Column(name= "cantidad", nullable = false)
+    @Column(name = "cantidad", nullable = false)
     private int cantidad;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="estado",nullable = false)
-    private EstadoProducto estadoProducto;
+    @Column(name = "estado", nullable = false)
+    private EstadoProducto estado; // <— nombre unificado
 }

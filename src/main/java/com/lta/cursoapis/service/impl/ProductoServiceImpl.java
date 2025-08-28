@@ -40,16 +40,17 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @SneakyThrows
     public Producto actualizarProducto(Long idProducto, Producto producto) {
-        Producto productoExistente = productoRepository.findByIdProducto(idProducto)
+        Producto existente = productoRepository.findByIdProducto(idProducto)
                 .orElseThrow(() -> new Exception("Producto no encontrado con ID: " + idProducto));
 
-        // Actualizar los campos del producto existente con los nuevos valores
-        productoExistente.setDescripcionProducto(producto.getDescripcionProducto());
-        productoExistente.setPrecio(producto.getPrecio());
-        productoExistente.setCantidad(producto.getCantidad());
-        productoExistente.setEstadoProducto(producto.getEstadoProducto());
+        // PUT (actualización completa): copia todos los campos relevantes
+        existente.setNombreProducto(producto.getNombreProducto());
+        existente.setDescripcionProducto(producto.getDescripcionProducto());
+        existente.setPrecio(producto.getPrecio());
+        existente.setCantidad(producto.getCantidad());
+        existente.setEstado(producto.getEstado()); // <-- antes: setEstadoProducto
 
-        return productoRepository.save(productoExistente);
+        return productoRepository.save(existente);
     }
 
     @Override
@@ -61,15 +62,15 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public Producto actualizarEstado(Long idProducto, EstadoProducto estadoProducto) {
-        Producto productoExistente = productoRepository.findByIdProducto(idProducto)
+    public Producto actualizarEstado(Long idProducto, EstadoProducto estado) {
+        Producto existente = productoRepository.findByIdProducto(idProducto)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + idProducto));
-        productoExistente.setEstadoProducto(estadoProducto);
-        return productoRepository.save(productoExistente);
+        existente.setEstado(estado); // <-- antes: setEstadoProducto
+        return productoRepository.save(existente);
     }
 
     @Override
-    public List<Producto> listarPorEstado(EstadoProducto estadoProducto) {
-        return productoRepository.findByEstadoProducto(estadoProducto);
+    public List<Producto> listarPorEstado(EstadoProducto estado) {
+        return productoRepository.findByEstado(estado); // <-- antes: findByEstadoProducto
     }
 }

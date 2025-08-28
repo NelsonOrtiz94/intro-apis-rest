@@ -26,66 +26,72 @@ public class ProductoController {
 
     @GetMapping
     public ResponseEntity<List<Producto>> listarProductos() {
-        List<Producto> productos = productoService.listarProductos();
-        return ResponseEntity.ok(productos);
+        return ResponseEntity.ok(productoService.listarProductos());
     }
 
     @GetMapping("/buscar/nombre/{nombre}")
     public ResponseEntity<?> buscarPorNombre(@PathVariable String nombre){
         Optional<Producto> producto = productoService.findByNombre(nombre);
-        return producto.isPresent() ? ResponseEntity.ok(producto.get())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con nombre: " + nombre);
+        return producto.<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Producto no encontrado con nombre: " + nombre));
     }
 
     @GetMapping("/buscar/id/{idProducto}")
     public ResponseEntity<?> findById(@PathVariable Long idProducto){
         Optional<Producto> producto = productoService.findById(idProducto);
-        return producto.isPresent()
-                ? ResponseEntity.ok(producto.get())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Producto no encontrado con id: " + idProducto);
+        return producto.<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Producto no encontrado con id: " + idProducto));
     }
 
+    // Opción simple: actualizar ENTIDAD completa (put id en el body)
     @PutMapping("/actualizar/{idProducto}")
     public ResponseEntity<?> actualizarProducto(@PathVariable Long idProducto, @RequestBody Producto producto) {
-      try{
-          Producto productoActualizado = new Producto();
-          productoActualizado.setNombreProducto(producto.getNombreProducto());
-            productoActualizado.setDescripcionProducto(producto.getDescripcionProducto());
-            productoActualizado.setPrecio(producto.getPrecio());
-            productoActualizado.setCantidad(producto.getCantidad());
-            productoActualizado.setEstadoProducto(producto.getEstadoProducto());
-            Producto productoBBDD = productoService.actualizarProducto(idProducto, productoActualizado);
+        try {
+            // Asegura que el servicio actualice el registro correcto
+            producto.setIdProducto(idProducto);
+            Producto productoBBDD = productoService.actualizarProducto(idProducto, producto);
             return ResponseEntity.ok(productoBBDD);
-
-      } catch (Exception exception){
-          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-      }
+        } catch (Exception exception){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
     }
 
     @DeleteMapping("/eliminar/{idProducto}")
     public ResponseEntity<?> eliminarProducto(@PathVariable Long idProducto) {
         try{
             productoService.eliminarProducto(idProducto);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         } catch (Exception exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
+
+    // Cambiar SOLO el estado (via query param)
+    public record EstadoRequest(String estadoProducto) {}
 
     @PutMapping("/estado/{idProducto}")
-    public ResponseEntity<?> cambiarEstadoProducto(@PathVariable Long idProducto, @RequestParam String estadoProducto) {
-        try{
-            Producto productoActualizado = productoService.actualizarEstado(idProducto, EstadoProducto.valueOf(estadoProducto));
+    public ResponseEntity<?> cambiarEstadoProducto(@PathVariable Long idProducto,
+                                                   @RequestBody EstadoRequest request) {
+        try {
+            Producto productoActualizado =
+                    productoService.actualizarEstado(idProducto, EstadoProducto.valueOf(request.estadoProducto().toUpperCase()));
             return ResponseEntity.ok(productoActualizado);
-        } catch (Exception exception){
+        } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
 
+
     @GetMapping("/listar/{estado}")
-    public ResponseEntity<List<Producto>> listarProdcutoPorEstado(@PathVariable String estado) {
-        List<Producto> productos = productoService.listarPorEstado(EstadoProducto.valueOf(estado));
-        return ResponseEntity.ok(productos);
+    public ResponseEntity<?> listarProductoPorEstado(@PathVariable String estado) {
+        try {
+            EstadoProducto filtro = EstadoProducto.valueOf(estado.toUpperCase());
+            List<Producto> productos = productoService.listarPorEstado(filtro);
+            return ResponseEntity.ok(productos);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Estado inválido: " + estado);
+        }
     }
 }
