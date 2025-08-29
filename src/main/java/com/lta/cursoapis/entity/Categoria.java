@@ -19,4 +19,7 @@ public class Categoria {
     @Column(name = "nombre_categoria",nullable = false,length = 50)
     private String nombreCategoria;
 
+    @ManyToOne
+    private Categoria categoria;
+
 }
