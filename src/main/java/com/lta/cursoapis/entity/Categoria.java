@@ -20,6 +20,7 @@ public class Categoria {
     private String nombreCategoria;
 
     @ManyToOne
+    @JoinColumn(name = "id_categoria", referencedColumnName = "id_categoria")
     private Categoria categoria;
 
 }
