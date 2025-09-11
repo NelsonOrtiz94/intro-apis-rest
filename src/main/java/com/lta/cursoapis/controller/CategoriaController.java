@@ -50,4 +50,14 @@ public class CategoriaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/{idCategoria}")
+    public ResponseEntity<Void> eliminarCategoria(@PathVariable Long idCategoria) {
+        try {
+            categoriaService.eliminarCategoria(idCategoria);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
