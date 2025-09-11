@@ -1,16 +1,14 @@
 package com.lta.cursoapis.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "categoria")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"padre", "subcategorias"})
+@NoArgsConstructor
 public class Categoria {
 
     @Id
@@ -18,17 +16,7 @@ public class Categoria {
     @Column(name = "id_categoria")
     private Long idCategoria;
 
-    @Column(name = "nombre_categoria", nullable = false, length = 50)
+    @Column(name = "nombre_categoria",nullable = false,length = 50)
     private String nombreCategoria;
 
-    // Padre de esta categoría (FK distinta a la PK)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_categoria_padre") // <-- NUEVA COLUMNA EN LA TABLA
-    @ToString.Exclude
-    private Categoria padre;
-
-    // Hijas de esta categoría (lado inverso)
-    @OneToMany(mappedBy = "padre")
-    @ToString.Exclude
-    private List<Categoria> subcategorias;
 }

@@ -1,15 +1,19 @@
 package com.lta.cursoapis.service.impl;
 
-import com.lta.cursoapis.entity.Categoria;
-import com.lta.cursoapis.repository.CategoriaRepository;
-import com.lta.cursoapis.service.CategoriaService;
-import lombok.SneakyThrows;
-import org.apache.coyote.BadRequestException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.lta.cursoapis.dto.CategoriaDTO;
+import com.lta.cursoapis.mapper.CategoriaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.lta.cursoapis.entity.Categoria;
+import com.lta.cursoapis.exceptions.BadRequestException;
+import com.lta.cursoapis.exceptions.ResourceNotFoundException;
+import com.lta.cursoapis.repository.CategoriaRepository;
+import com.lta.cursoapis.service.CategoriaService;
 
 @Service
 public class CategoriaServiceImpl implements CategoriaService {
@@ -17,42 +21,50 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    @Autowired
+    private CategoriaMapper categoriaMapper;
+
     @Override
-    @SneakyThrows
-    public Categoria crearCategoria(Categoria categoria) {
-        if(categoriaRepository.existsByNombreCategoria(categoria.getNombreCategoria())) {
-            throw new BadRequestException("La categoría ya existe");
-        } else {
-            return categoriaRepository.save(categoria);
+    public CategoriaDTO crearCategoria(CategoriaDTO categoriaDTO) {
+        if(categoriaRepository.existsByNombreCategoria(categoriaDTO.getNombreCategoria())){
+            throw new BadRequestException("Ya existe una categoría con ese nombre");
         }
+
+        Categoria categoria = categoriaMapper.toEntity(categoriaDTO);
+        Categoria nuevaCategoria = categoriaRepository.save(categoria);
+        return categoriaMapper.toDTO(nuevaCategoria);
     }
 
     @Override
-    public List<Categoria> listarCategorias() {
-        return categoriaRepository.findAll();
+    public List<CategoriaDTO> listarCategorias() {
+        List<Categoria> categorias = categoriaRepository.findAll();
+        return categorias.stream()
+                .map(categoriaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Categoria> obtenerCategoriaPorId(Long idCategoria) {
-        return categoriaRepository.findById(idCategoria);
+    public Optional<CategoriaDTO> obtenerCategoriaPorId(Long idCategoria) {
+        Optional<Categoria> categoria = categoriaRepository.findById(idCategoria);
+        return categoria.map(categoriaMapper::toDTO);
     }
 
     @Override
-    @SneakyThrows
-    public Categoria actualizarCategoria(Long idCategoria, Categoria categoria) {
+    public CategoriaDTO actualizarCategoria(Long idCategoria, CategoriaDTO categoriaDTO) {
         Categoria categoriaExistente = categoriaRepository.findById(idCategoria)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-        categoriaExistente.setNombreCategoria(categoria.getNombreCategoria());
-        return categoriaRepository.save(categoriaExistente);
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada"));
+
+        categoriaExistente.setNombreCategoria(categoriaDTO.getNombreCategoria());
+        Categoria categoriaActualizada = categoriaRepository.save(categoriaExistente);
+        return categoriaMapper.toDTO(categoriaActualizada);
     }
 
     @Override
     public void eliminarCategoria(Long idCategoria) {
         Optional<Categoria> categoriaExistente = categoriaRepository.findById(idCategoria);
-        if(!categoriaExistente.isPresent()) {
-            throw new RuntimeException("Categoría no encontrada");
-        } else {
-            categoriaRepository.deleteById(idCategoria);
+        if(!categoriaExistente.isPresent()){
+            throw new ResourceNotFoundException("Categoría no encontrada para eliminar.");
         }
+        categoriaRepository.deleteById(idCategoria);
     }
 }

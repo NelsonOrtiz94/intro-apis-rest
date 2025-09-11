@@ -1,13 +1,14 @@
 package com.lta.cursoapis.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "producto")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Producto {
 
     @Id
@@ -15,25 +16,23 @@ public class Producto {
     @Column(name = "id_producto")
     private Long idProducto;
 
-    @Column(name = "nombre_producto", nullable = false, length = 100)
+    @Column(name = "nombre_producto",nullable = false,length = 100)
     private String nombreProducto;
 
     @Column(name = "descripcion")
-    private String descripcionProducto;
+    private String descripcion;
 
-    @Column(name = "precio", nullable = false)
+    @Column(name = "precio",nullable = false)
     private Double precio;
 
-    @Column(name = "cantidad", nullable = false)
+    @Column(name = "cantidad",nullable = false)
     private int cantidad;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false)
-    private EstadoProducto estado;
+    @Column(name = "estado_producto",nullable = false)
+    private EstadoProducto estadoProducto;
 
-    // FK correcta a Categoria
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_categoria", nullable = false) // FK en la tabla producto
-    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "id_categoria",referencedColumnName = "id_categoria")
     private Categoria categoria;
 }

@@ -1,26 +1,26 @@
 package com.lta.cursoapis.service;
 
+import com.lta.cursoapis.dto.ProductoDTO;
 import com.lta.cursoapis.entity.EstadoProducto;
-import com.lta.cursoapis.entity.Producto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductoService {
 
-    Producto registrarProducto(Producto producto);
+    ProductoDTO registrarProducto(Long categoriaId, ProductoDTO productoDTO);
 
-    List<Producto> listarProductos();
+    List<ProductoDTO> listarProductos();
 
-    Optional<Producto> findByNombre(String nombre);
+    Optional<ProductoDTO> buscarPorNombre(String nombre);
 
-    Optional<Producto> findById(Long idProducto);
+    Optional<ProductoDTO> buscarPorId(Long idProducto);
 
-    Producto actualizarProducto(Long idProducto, Producto producto);
+    ProductoDTO actualizarProducto(Long idProducto,ProductoDTO productoDTO);
 
     void eliminarProducto(Long idProducto);
 
-    Producto actualizarEstado(Long idProducto, EstadoProducto estadoProducto);
+    ProductoDTO cambiarEstadoProducto(Long idProducto, EstadoProducto nuevoEstadoProducto);
 
-    List<Producto> listarPorEstado(EstadoProducto estadoProducto);
+    List<ProductoDTO> obtenerProductosPorEstado(EstadoProducto estadoProducto);
 }

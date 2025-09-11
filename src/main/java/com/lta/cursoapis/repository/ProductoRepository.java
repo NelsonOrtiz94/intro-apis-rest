@@ -9,14 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProductoRepository extends JpaRepository<Producto, Long> {
-
-    Optional<Producto> findByIdProducto(Long idProducto);
+public interface ProductoRepository extends JpaRepository<Producto,Long> {
 
     Optional<Producto> findByNombreProducto(String nombreProducto);
 
-    // Antes: findByEstadoProducto(...)
-    List<Producto> findByEstado(EstadoProducto estado);
+    Optional<Producto> findByIdProducto(Long idProducto);
 
-
+    List<Producto> findByEstadoProducto(EstadoProducto estadoProducto);
 }

@@ -11,4 +11,5 @@ public class Message {
 
     private int id;
     private String content;
+
 }
