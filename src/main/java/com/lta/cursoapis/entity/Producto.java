@@ -1,14 +1,13 @@
 package com.lta.cursoapis.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
+@Table(name = "producto")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Producto {
 
     @Id
@@ -16,7 +15,7 @@ public class Producto {
     @Column(name = "id_producto")
     private Long idProducto;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "nombre_producto", nullable = false, length = 100)
     private String nombreProducto;
 
     @Column(name = "descripcion")
@@ -30,5 +29,11 @@ public class Producto {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false)
-    private EstadoProducto estado; // <— nombre unificado
+    private EstadoProducto estado;
+
+    // FK correcta a Categoria
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_categoria", nullable = false) // FK en la tabla producto
+    @ToString.Exclude
+    private Categoria categoria;
 }
