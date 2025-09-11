@@ -5,10 +5,7 @@ import com.lta.cursoapis.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +27,27 @@ public class CategoriaController {
         return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 
+    @GetMapping("/{idCategoria}")
     public ResponseEntity<Categoria> obtenerCategoriaPorId(@PathVariable Long idCategoria) throws Exception {
         Optional<Categoria> categoriaOptional = categoriaService.obtenerCategoriaPorId(idCategoria);
         if(!categoriaOptional.isPresent()) {
             return new ResponseEntity<>(categoriaOptional.get(), HttpStatus.NOT_FOUND);
         }else  {
             throw new Exception("Categoría no encontrada");
+        }
+    }
+
+    @PutMapping("/{idCategoria}")
+    public ResponseEntity<Categoria> actualizarCategoria(@PathVariable Long idCategoria, @RequestBody Categoria categoria) {
+        try {
+            Categoria categoriaActualizada = categoriaService.actualizarCategoria(idCategoria, categoria);
+            if(categoriaActualizada != null) {
+                return new ResponseEntity<>(categoriaActualizada, HttpStatus.OK);
+            } else {
+                throw new Exception("No se encuentra categoria para actualizar");
+            }
+        }catch (Exception exception) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
